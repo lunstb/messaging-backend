@@ -26,8 +26,8 @@ WORKDIR /dist
 # Copy binary from build to main folder
 RUN cp /build/main .
 
-# Export necessary port
-EXPOSE 3000
+# Export necessary port. Not 100% sure exposing this is necessary, will test later
+EXPOSE 8080
 
 # Command to run when starting the container
 CMD ["/dist/main"]
