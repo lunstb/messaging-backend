@@ -2,8 +2,6 @@ package websocket
 
 import (
 	"fmt"
-
-	"../gamemodel"
 )
 
 /*
@@ -19,7 +17,7 @@ type Game struct {
 	Unregister chan *Client
 	Clients    map[*Client]bool
 	Broadcast  chan Message
-	Model      *gamemodel.GameModel
+	//Model      *gamemodel.GameModel
 }
 
 // NewGame function returns a game model
@@ -29,7 +27,7 @@ func NewGame() *Game {
 		Unregister: make(chan *Client),
 		Clients:    make(map[*Client]bool),
 		Broadcast:  make(chan Message),
-		Model:      gamemodel.NewGameModel(),
+		//Model:      gamemodel.NewGameModel(),
 	}
 }
 

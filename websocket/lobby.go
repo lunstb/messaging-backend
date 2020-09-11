@@ -17,7 +17,6 @@ type NeighborMessage struct {
  *  - Register: 	Channel for clients to register for the lobby
  *  - Unregister:	Channel for clients to unregister from the lobby
  *  - Broadcast:	Channel for clients to broadcast messages to clients
- *  - Games:			Collection of games in lobby
  */
 type Lobby struct {
 	Clients    map[*Client]bool
@@ -25,7 +24,6 @@ type Lobby struct {
 	Register   chan *Client
 	Unregister chan *Client
 	Broadcast  chan Message
-	Games      map[string]*Game
 }
 
 // NewLobby returns a new lobby
@@ -35,7 +33,6 @@ func NewLobby() *Lobby {
 		Unregister: make(chan *Client),
 		Clients:    make(map[*Client]bool),
 		Broadcast:  make(chan Message),
-		Games:      make(map[string]*Game),
 	}
 }
 
