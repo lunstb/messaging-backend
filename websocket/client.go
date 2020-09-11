@@ -21,7 +21,6 @@ type Client struct {
 	Conn  *websocket.Conn
 	Pool  *Pool
 	Lobby *Lobby
-	Game  *Game
 }
 
 /*
@@ -81,10 +80,6 @@ func (c *Client) Read() {
 	defer func() {
 		c.Pool.Unregister <- c
 		c.Lobby.Unregister <- c
-
-		if c.Game != nil {
-			c.Game.Unregister <- c
-		}
 
 		c.Conn.Close()
 	}()
