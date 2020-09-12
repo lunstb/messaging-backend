@@ -15,7 +15,6 @@ type Pool struct {
 	Unregister chan *Client
 	Clients    map[*Client]bool
 	Broadcast  chan Message
-	Neighbors  chan NeighborMessage
 }
 
 /*
@@ -28,7 +27,6 @@ func NewPool() *Pool {
 		Unregister: make(chan *Client),
 		Clients:    make(map[*Client]bool),
 		Broadcast:  make(chan Message),
-		Neighbors:  make(chan NeighborMessage),
 	}
 }
 
@@ -56,14 +54,6 @@ func (pool *Pool) Start() {
 			fmt.Println("Sending message to all clients in Pool")
 			for client := range pool.Clients {
 				if err := client.Conn.WriteJSON(message); err != nil {
-					fmt.Println(err)
-					return
-				}
-			}
-		case neighborMsg := <-pool.Neighbors:
-			fmt.Println("Sending message to neighbors")
-			for client, _ := range neighborMsg.Clients {
-				if err := client.Conn.WriteJSON(neighborMsg.Message); err != nil {
 					fmt.Println(err)
 					return
 				}

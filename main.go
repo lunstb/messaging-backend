@@ -39,6 +39,8 @@ func serveWs(pool *websocket.Pool, lobby *websocket.Lobby, w http.ResponseWriter
 }
 
 func setupRoutes() {
+	websocket.Test()
+
 	pool := websocket.NewPool()
 	lobby := websocket.NewLobby()
 

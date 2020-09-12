@@ -14,13 +14,11 @@ import (
  *  - Conn: Reference to websocket connection
  *  - Pool: Reference to pool
  *  - Lobby: Reference to lobby
- *  - Game: Reference to game that client is connected to, may be nil
  */
 type Client struct {
-	ID    string
-	Conn  *websocket.Conn
-	Pool  *Pool
-	Lobby *Lobby
+	ID   string
+	Conn *websocket.Conn
+	Pool *Pool
 }
 
 /*
@@ -79,7 +77,6 @@ type Content struct {
 func (c *Client) Read() {
 	defer func() {
 		c.Pool.Unregister <- c
-		c.Lobby.Unregister <- c
 
 		c.Conn.Close()
 	}()
@@ -100,7 +97,6 @@ func (c *Client) Read() {
 
 		fmt.Println("Type:", messageContent.Type)
 		fmt.Println("Content:", messageContent.Content.TextMsg)
-		c.Lobby.Broadcast <- message
 		c.Pool.Broadcast <- message
 		fmt.Printf("Message Received: %+v\n", message)
 		fmt.Println("Client ID:", string(c.ID))
