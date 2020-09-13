@@ -13,7 +13,6 @@ import (
  *  - ID:	Client ID,
  *  - Conn: Reference to websocket connection
  *  - Pool: Reference to pool
- *  - Lobby: Reference to lobby
  */
 type Client struct {
 	ID   string

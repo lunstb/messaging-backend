@@ -5,9 +5,12 @@ import (
 	"log"
 	"net/http"
 
+	"example.com/main/database"
 	"example.com/main/stringgen"
 	"example.com/main/websocket"
 )
+
+var db *database.Database
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Welcome to the HomePage!")
@@ -19,7 +22,7 @@ func testPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: test page")
 }
 
-func serveWs(pool *websocket.Pool, lobby *websocket.Lobby, w http.ResponseWriter, r *http.Request) {
+func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: WebSocket")
 	conn, err := websocket.Upgrade(w, r)
 	if err != nil {
@@ -27,30 +30,28 @@ func serveWs(pool *websocket.Pool, lobby *websocket.Lobby, w http.ResponseWriter
 	}
 
 	client := &websocket.Client{
-		ID:    stringgen.String(10),
-		Conn:  conn,
-		Pool:  pool,
-		Lobby: lobby,
+		ID:   stringgen.String(10),
+		Conn: conn,
+		Pool: pool,
 	}
 
 	pool.Register <- client
-	lobby.Register <- client
 	client.Read()
 }
 
 func setupRoutes() {
-	websocket.Test()
+	db = database.Connect()
+
+	db.Test()
 
 	pool := websocket.NewPool()
-	lobby := websocket.NewLobby()
 
 	go pool.Start()
-	go lobby.Start()
 
 	http.HandleFunc("/", homePage)
 	http.HandleFunc("/test", testPage)
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		serveWs(pool, lobby, w, r)
+		serveWs(pool, w, r)
 	})
 }
 
