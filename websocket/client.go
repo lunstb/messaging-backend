@@ -61,15 +61,9 @@ type Response struct {
 /*
  * Content
  *  - TextMsg: 			If is of textMsg type,
- *  - TileX:				If it is getting or setting a tile, this would contain the x position
- *  - TileY:				If it is getting or setting a tile, this would contain the y position
- *  - DesiredPool:	If it is trying to switch pool, this would contain the desired pool
  */
 type Content struct {
-	TextMsg     string `json:"textMsg,omitempty"`
-	TileX       int    `json:"tileX,omitempty"`
-	TileY       int    `json:"tileY,omitempty"`
-	DesiredPool string `json:"desiredPool,omitempty"`
+	TextMsg string `json:"textMsg,omitempty"`
 }
 
 // Read function
