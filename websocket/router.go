@@ -1,20 +1,21 @@
-package router
+package websocket
 
 import (
 	"fmt"
 	"sync"
-
-	"example.com/main/websocket"
 )
 
 var once sync.Once
 
 // Router provides a type
 type Router struct {
-	Register    chan *websocket.Client
-	Unregister  chan *websocket.Client
-	Clients     map[*websocket.Client]bool
-	SendMessage chan websocket.Message
+	Register           chan *Client
+	Unregister         chan *Client
+	CreateConversation chan *CreateConversation
+	GetConversation    chan *GetConversation
+	GetConversations   chan *Client
+	Clients            map[*Client]bool
+	SendMessage        chan Message
 }
 
 // variavel Global
@@ -25,10 +26,13 @@ func Connect() *Router {
 
 	once.Do(func() {
 		instance = &Router{
-			Register:    make(chan *websocket.Client),
-			Unregister:  make(chan *websocket.Client),
-			Clients:     make(map[*websocket.Client]bool),
-			SendMessage: make(chan websocket.Message),
+			Register:           make(chan *Client),
+			Unregister:         make(chan *Client),
+			CreateConversation: make(chan *CreateConversation),
+			GetConversation:    make(chan *GetConversation),
+			GetConversations:   make(chan *Client),
+			Clients:            make(map[*Client]bool),
+			SendMessage:        make(chan Message),
 		}
 	})
 
@@ -52,8 +56,23 @@ func (router *Router) Start() {
 			delete(router.Clients, client)
 			fmt.Println("Size of Connection Router: ", len(router.Clients))
 			for client := range router.Clients {
-				client.Conn.WriteJSON(websocket.Message{Type: 1, Body: "User Disconnected..."})
+				client.Conn.WriteJSON(Message{Type: 1, Body: "User Disconnected..."})
 			}
+			break
+		case conversation := <-router.CreateConversation:
+			fmt.Println("Create Conversation")
+			fmt.Println("Conversation Name", conversation.Name)
+			fmt.Println("Conversation Participants: ", conversation.Participants)
+			break
+		case conversation := <-router.GetConversation:
+			fmt.Println("Get Conversation:")
+			fmt.Println("Client ID: ", conversation.ClientID)
+			fmt.Println("Conversation ID: ", conversation.ConversationID)
+			fmt.Println("Offset: ", conversation.Offset)
+			break
+		case client := <-router.GetConversations:
+			fmt.Println("Get Conversations:")
+			fmt.Println("Client ID", client.ID)
 			break
 		case message := <-router.SendMessage:
 			//fmt.Println("The message is: ", message)

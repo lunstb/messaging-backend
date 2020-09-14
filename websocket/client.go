@@ -60,10 +60,32 @@ type Response struct {
 
 /*
  * Content
- *  - TextMsg: 			If is of textMsg type,
+ *  - TextMsg: If is of textMsg type,
  */
 type Content struct {
 	TextMsg string `json:"textMsg,omitempty"`
+}
+
+/*
+ * CreateConversation
+ *  - Participants: A string delimited by | containing a list of participants in the conversation
+ *  - Name:					The name of the conversation
+ */
+type CreateConversation struct {
+	Participants string `json:"participants"`
+	Name         string `json:"name"`
+}
+
+/*
+ * GetConversation
+ *  - ConversationID: The hash id of the conversation
+ *  - Offset:					Integer offset of range of messages you're grabbing
+ *  - ClientID:				ID of the client making the get request
+ */
+type GetConversation struct {
+	ConversationID string `json:"conversationID"`
+	Offset         int    `json:"offset"`
+	ClientID       string `json:"clientID"`
 }
 
 // Read function
